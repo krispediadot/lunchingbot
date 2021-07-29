@@ -1,26 +1,14 @@
-from configparser import ConfigParser
-import os
-from slack_bolt import App
-from datetime import datetime, date, timedelta
+"""
+작성자: 김근우
+"""
+
 import pandas as pd
+from datetime import datetime, date, timedelta
 
-config = ConfigParser()
-config.read('config.ini')
-
-TOKEN = config['SLACKBOT']['TOKEN']
-SIGNING_SECRET = config['SLACKBOT']['SECRET_SIGNING']
-
-# Initializes the app
-app = App(
-    token=TOKEN,
-    signing_secret = SIGNING_SECRET
-)
-
-# 메뉴추천
 def preferMenu(members, delivery=True):
     # members: 점심을 먹을 멤버들이 포함된 튜플 또는 리스트 (예: (member1, member3))
     # delivery(default: True): 배달 여부 (True: 배달음식, False: 외부음식)
-    path = './data/'  # .csv 파일들이 저장된 경로 입력
+    path = 'core/data/'  # .csv 파일들이 저장된 경로 입력
 
     memberLen = len(members)
     menu = pd.read_csv(path + 'menu.csv', engine='python', encoding='CP949')
@@ -54,51 +42,3 @@ def preferMenu(members, delivery=True):
     printMent3 = "> :third_place_medal: " + preferSorted.index[2] + "    (점수: " + str(
         round(preferSorted[2] * 100 / (5 ** memberLen), 1)) + " )"
     return printMent0 + '\n' + printMent1 + '\n' + printMent2 + '\n' + printMent3
-
-
-
-# Respond to hello
-@app.message("hello")
-def say_hello(message, say, payload):
-    say("hi")
-    print(payload['text'])
-
-@app.message("넌뭐야")
-def say_hello(message, say, payload):
-    # 설명 추가
-    say("hi")
-    print(payload['text'])
-
-@app.message("점심추천")
-def lunch(say, payload):
-    """
-    :param say:
-    :param payload: message 내용
-    :return:
-
-    명령어 형식(모두 띄어쓰기 해야함) = [점심추천] [밖/안] [멤버1] [멤버2] [멤버3] [멤버4] ~~
-    """
-    commands = payload['text'].split()
-    inside = (commands[1] == '안')
-    memberList = [x for x in commands[2:]]
-
-    print((inside == True))
-    print(memberList)
-
-    # menuList = ["한식", "중식", "양식"]
-    menuList = preferMenu(memberList, inside)
-
-    # message_format = f"---------------------\n>" \
-    #                  f"{datetime.now().strftime('%Y-%m-%d')} \n>\n>" \
-    #                  f"오늘의 추천 메뉴\n>" \
-    #                  f"1순위. {menuList[0]}\n>" \
-    #                  f"2순위. {menuList[1]}\n>" \
-    #                  f"3순위. {menuList[2]}\n>" \
-    #                  f"---------------------\n>"
-    # say(message_format)
-
-    say(menuList)
-
-# Start your app
-if __name__ == "__main__":
-    app.start(port=int(os.environ.get("PORT", 3000)))
