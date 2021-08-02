@@ -46,6 +46,7 @@ def say_hello(message, say, payload):
 
 @app.message("점심추천")
 def lunch(say, payload):
+    print(payload)
 
     try:
         commands = payload['text'].split()
