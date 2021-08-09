@@ -32,14 +32,15 @@ def updateRestaurantList(info:dict):
     :param info:
     :return:
     """
-    path = 'core/data/'  # .csv 파일들이 저장된 경로 입력
+    path = '../core/data/'  # .csv 파일들이 저장된 경로 입력
     filename = 'restaurants.csv'
 
     f = open(path + filename, 'a', newline='')
     wr = csv.writer(f)
 
     # for info in infor:
-    wr.writerow([info['id'],
+    wr.writerow([info['category'],
+                 info['id'],
                  info['name'],
                  info['phone'],
                  info['lng'],
@@ -102,41 +103,47 @@ def getRestaurants(category="", search=""):
     infor = []
 
     for restaurant in data['restaurants']:
-        info = {"category": category,
-                "id": "",
-                "name": "",
-                "phone": "",
-                "lng": "",
-                "lat": "",
-                "distance": "",
-                "review_avg": "",
-                "review_count": "",
-                "begin": "",
-                "adjusted_delivery_fee": "",
-                "min_order_amount": "",
-                "menu_list": []
-                }
+        try:
+            # review_count 20개 이상만 가져옴
+            if (restaurant['review_count'] >= 20):
+                info = {"category": category,
+                        "id": "",
+                        "name": "",
+                        "phone": "",
+                        "lng": "",
+                        "lat": "",
+                        "distance": "",
+                        "review_avg": "",
+                        "review_count": "",
+                        "begin": "",
+                        "adjusted_delivery_fee": "",
+                        "min_order_amount": "",
+                        "menu_list": []
+                        }
 
-        info['id'] = restaurant['id']
-        info['name'] = restaurant['name']
-        info['phone'] = restaurant['phone']
-        info['lng'] = restaurant['lng']
-        info['lat'] = restaurant['lat']
-        info['distance'] = restaurant['distance']
-        info['review_avg'] = restaurant['review_avg']
-        info['review_count'] = restaurant['review_count']
-        info['begin'] = restaurant['begin']
-        info['adjusted_delivery_fee'] = restaurant['adjusted_delivery_fee']
-        info['min_order_amount'] = restaurant['min_order_amount']
-        info['menu_list'] = getMenu(restaurant['id'])
+                info['id'] = restaurant['id']
+                info['name'] = restaurant['name']
+                info['phone'] = restaurant['phone']
+                info['lng'] = restaurant['lng']
+                info['lat'] = restaurant['lat']
+                info['distance'] = restaurant['distance']
+                info['review_avg'] = restaurant['review_avg']
+                info['review_count'] = restaurant['review_count']
+                info['begin'] = restaurant['begin']
+                info['adjusted_delivery_fee'] = restaurant['adjusted_delivery_fee']
+                info['min_order_amount'] = restaurant['min_order_amount']
+                info['menu_list'] = getMenu(restaurant['id'])
 
-        infor.append(info)
-        updateRestaurantList(info)
-        time.sleep(3)
+                infor.append(info)
+                updateRestaurantList(info)
+                time.sleep(3)
+                print(info)
+        except:
+            continue
 
     return infor
 
 if __name__ == "__main__":
     # getMenu(306957)
-    res = getRestaurants(categories[0])
-    print(res[0])
+    # for i in range(len(categories)):
+    res = getRestaurants(categories[5])
