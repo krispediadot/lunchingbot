@@ -46,15 +46,15 @@ def preferMenu(members, delivery=True):
         third_restaurants = restaurants[restaurants[preferSorted.index[2]]].sort_values(
             by=['review_avg', 'review_count'], ascending=False).head(5).astype('string')
     else:
-        first_restaurants = restaurants[restaurants[preferSorted.index[0]]].sort_values(
-            by=['review_avg', 'review_count'], ascending=False).sort_values(by='distance', ascending=True).head(
-            5).astype('string')
-        second_restaurants = restaurants[restaurants[preferSorted.index[1]]].sort_values(
-            by=['review_avg', 'review_count'], ascending=False).sort_values(by='distance', ascending=True).head(
-            5).astype('string')
-        third_restaurants = restaurants[restaurants[preferSorted.index[2]]].sort_values(
-            by=['review_avg', 'review_count'], ascending=False).sort_values(by='distance', ascending=True).head(
-            5).astype('string')
+        first_restaurants = restaurants[restaurants[preferSorted.index[0]]]
+        first_restaurants['score'] = first_restaurants['review_avg'] / first_restaurants['distance']
+        first_restaurants = first_restaurants.sort_values(by='score', ascending=False).head(5).astype('string')
+        second_restaurants = restaurants[restaurants[preferSorted.index[1]]]
+        second_restaurants['score'] = second_restaurants['review_avg'] / second_restaurants['distance']
+        second_restaurants = second_restaurants.sort_values(by='score', ascending=False).head(5).astype('string')
+        third_restaurants = restaurants[restaurants[preferSorted.index[2]]]
+        third_restaurants['score'] = third_restaurants['review_avg'] / third_restaurants['distance']
+        third_restaurants = third_restaurants.sort_values(by='score', ascending=False).head(5).astype('string')
 
     # 아래는 printMent를 구성
     printMent0 = "*오늘 점심 메뉴 추천은 다음과 같아요!*\n"
