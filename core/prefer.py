@@ -38,23 +38,20 @@ def preferMenu(members, delivery=True):
 
     restaurants = pd.read_csv(path + 'restaurants(revised).csv', engine='python', encoding='CP949')
 
-    if delivery == True:
-        first_restaurants = restaurants[restaurants[preferSorted.index[0]]].sort_values(
-            by=['review_avg', 'review_count'], ascending=False).head(5).astype('string')
-        second_restaurants = restaurants[restaurants[preferSorted.index[1]]].sort_values(
-            by=['review_avg', 'review_count'], ascending=False).head(5).astype('string')
-        third_restaurants = restaurants[restaurants[preferSorted.index[2]]].sort_values(
-            by=['review_avg', 'review_count'], ascending=False).head(5).astype('string')
-    else:
-        first_restaurants = restaurants[restaurants[preferSorted.index[0]]]
-        first_restaurants['score'] = first_restaurants['review_avg'] / first_restaurants['distance']
-        first_restaurants = first_restaurants.sort_values(by='score', ascending=False).head(5).astype('string')
-        second_restaurants = restaurants[restaurants[preferSorted.index[1]]]
-        second_restaurants['score'] = second_restaurants['review_avg'] / second_restaurants['distance']
-        second_restaurants = second_restaurants.sort_values(by='score', ascending=False).head(5).astype('string')
-        third_restaurants = restaurants[restaurants[preferSorted.index[2]]]
-        third_restaurants['score'] = third_restaurants['review_avg'] / third_restaurants['distance']
-        third_restaurants = third_restaurants.sort_values(by='score', ascending=False).head(5).astype('string')
+    def return_best_restaurants(cat, delivery):
+        cut_countTRUE = 4 if cat != '치킨' else 1  # 치킨이 선택되면 cut_countTRUE에 1, 나머지는 4를 주도록 설정.
+        if delivery == True:
+            best_restaurants = restaurants[restaurants[cat] & (restaurants['countTRUE'] <= cut_countTRUE)].sort_values(
+                by=['review_avg', 'review_count'], ascending=False).head(5).astype('string')
+        else:
+            best_restaurants = restaurants[restaurants[cat] & (restaurants['countTRUE'] <= cut_countTRUE)]
+            best_restaurants['score'] = best_restaurants['review_avg'] / best_restaurants['distance']
+            best_restaurants = best_restaurants.sort_values(by='score', ascending=False).head(5).astype('string')
+        return best_restaurants
+
+    first_restaurants = return_best_restaurants(preferSorted.index[0], delivery)
+    second_restaurants = return_best_restaurants(preferSorted.index[1], delivery)
+    third_restaurants = return_best_restaurants(preferSorted.index[2], delivery)
 
     # 아래는 printMent를 구성
     printMent0 = "*오늘 점심 메뉴 추천은 다음과 같아요!*\n"
@@ -98,7 +95,7 @@ def preferMenu(members, delivery=True):
 
 
 def revise_restaurants_csv():
-    restaurants = pd.read_csv(path + 'restaurants.csv', engine='python', encoding='CP949')
+    restaurants = pd.read_csv('restaurants.csv', engine='python', encoding='CP949')
     restaurants = restaurants.drop_duplicates(['id'])  # 중복 데이터 삭제
     restaurants = restaurants[~restaurants['name'].str.contains('CU|GS')]  # 편의점 삭제
     restaurants = restaurants[restaurants.begin.str.split(':').str[0].astype('int') <= 11]  # 12시 이후 오픈 삭제
@@ -117,15 +114,17 @@ def revise_restaurants_csv():
     restaurants['분식'] = restaurants['menu_list'].str.contains('떡볶이') | restaurants['name'].str.contains('떡볶이')
     restaurants['중국집'] = restaurants['menu_list'].str.contains('짬뽕|탕수육|짜장면|자장면') | restaurants['name'].str.contains(
         '짬뽕|탕수육|짜장면|자장면')
-    restaurants['돈까스'] = restaurants['menu_list'].str.contains('가스|까스|카츠') | restaurants['name'].str.contains(
-        '가스|까스|카츠')
-    restaurants['스시'] = restaurants['menu_list'].str.contains('초밥|스시|사시미|회') | restaurants['name'].str.contains(
-        '초밥|스시|사시미|회')
-    restaurants['치킨'] = restaurants['menu_list'].str.contains('치킨|통닭|후라이드|강정') | restaurants['name'].str.contains(
-        '치킨|통닭|후라이드|강정')
+    restaurants['돈까스'] = restaurants['menu_list'].str.contains('돈가스|까스|카츠') | restaurants['name'].str.contains(
+        '돈가스|까스|카츠')
+    restaurants['스시'] = (restaurants['menu_list'].str.contains('초밥|스시|사시미|회') | restaurants['name'].str.contains(
+        '초밥|스시|사시미|회')) & (~restaurants['menu_list'].str.contains('육회'))
+    restaurants['치킨'] = (restaurants['menu_list'].str.contains('치킨|통닭|후라이드|강정') | restaurants['name'].str.contains(
+        '치킨|통닭|후라이드|강정')) & (~restaurants['menu_list'].str.contains('버거|토스트|덮밥')) & (
+                            ~restaurants['name'].str.contains('바게뜨|토스트|돈까스|카페|버거'))
     restaurants['피자'] = restaurants['menu_list'].str.contains('피자') | restaurants['name'].str.contains('피자')
     restaurants['샌드위치(써브웨이, 이삭 등)'] = restaurants['menu_list'].str.contains('샌드위치|토스트|버거') | restaurants[
         'name'].str.contains('샌드위치|토스트|브웨이|버거')
     restaurants['파스타/ 필라프'] = restaurants['menu_list'].str.contains('파스타|필라프') | restaurants['name'].str.contains(
         '파스타|필라프')
-    restaurants.to_csv(path + "restaurants(revised).csv", mode='w', encoding='CP949', index=None)
+    restaurants['countTRUE'] = restaurants.loc[:, '국밥':'파스타/ 필라프'].apply(pd.Series.value_counts, axis=1)[True].fillna(0)
+    restaurants.to_csv("restaurants(revised).csv", mode='w', encoding='CP949', index=None)
