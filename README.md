@@ -1,4 +1,7 @@
 
+![](https://raw.githubusercontent.com/krispediadot/lunchingbot/master/run.png?token=ABYBLR5QPXQ2D43VJCYTHFTBD4GHA)
+
+
 ### 사용법
 
 1. `config.ini` 파일에서 TOKEN, SECRET_SIGNING 값을 변경한다.
