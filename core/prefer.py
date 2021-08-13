@@ -17,7 +17,7 @@ def preferMenu(members, delivery=True):
     menu = pd.read_csv(path + 'menu.csv', engine='python', encoding='CP949')
     menu.index = menu['menu'].values  # 메뉴의 행 이름을 메뉴명으로 변경하기 위한 코드
     menu.drop(['menu'], axis=1, inplace=True)  # 메뉴의 행 이름을 메뉴명으로 변경하기 위한 코드
-
+"ㅈㅂ:ㅂ!"
     if delivery == False:  # delivery 인자가 False(즉, 외식)이면 외식용 메뉴 리스트로 변환. 즉, True(배달용)에 해당하는 메뉴를 모두 버림
         menu = menu.loc[menu['delivery'] == False]
     menuScore = menu.loc[:, members].prod(axis=1)  # menuScore를 반환, menuScore = members의 메뉴 선호도를 모두 곱한 값을 반환
