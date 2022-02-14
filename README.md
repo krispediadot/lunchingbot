@@ -1,5 +1,5 @@
 
-![](https://raw.githubusercontent.com/krispediadot/lunchingbot/master/run.png?token=ABYBLR5QPXQ2D43VJCYTHFTBD4GHA)
+![](https://github.com/krispediadot/lunchingbot/blob/master/run.png?raw=true)
 
 
 ### 사용법
