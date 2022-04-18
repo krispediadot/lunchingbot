@@ -1,4 +1,4 @@
-menu,delivery,,,,,,,,,
+menu,delivery,name1,name2,name3,name4,name5,name6,name7,name8,name9
 국밥,False,7,9,3,9,10,8,8,8,10
 찌개/탕,False,7,8,6,9,10,8,5,7,10
 "찜류(찜닭, ...)",False,8,7,9,9,10,6,7,8,10
