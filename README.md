@@ -2,6 +2,11 @@
 ![](https://github.com/krispediadot/lunchingbot/blob/master/run.png?raw=true)
 
 
+### 설명
+
+점심 메뉴 선정의 고민을 해결하고자 만든 봇<br>
+ngrok을 사용해 임시 서버로 잠깐 봇을 구동
+
 ### 사용법
 
 1. utils/crawler.py 코드 작성
