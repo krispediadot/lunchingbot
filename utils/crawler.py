@@ -6,8 +6,8 @@ import csv
 
 headers = {"referer": "https://www.yogiyo.co.kr/mobile/",
            "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Safari/537.36",
-           "x-apikey": "iphoneap",
-           "x-apisecret": "fe5183cc3dea12bd0ce299cf110a75a2"
+           "x-apikey": "변경 필요",
+           "x-apisecret": "변경 필요"
           }
 
 categories = ['피자양식', '한식', '족발보쌈', '분식', '치킨', '중국집', '일식돈까스']
@@ -89,8 +89,8 @@ def getMenu(restaurantsID):
 def getRestaurants(category="", search=""):
     params = {"category": category,
               "itmes": 60,
-              "lat": 35.1005913092695,
-              "lng": 129.018514852669,
+              "lat": 좌표 변경,
+              "lng": 좌표 변경,
               "order": "rank",
               "page": 0,
               "search": search
